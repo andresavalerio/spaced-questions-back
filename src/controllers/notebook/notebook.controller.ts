@@ -23,7 +23,7 @@ export class NotebookController {
 
       res.status(200).json({ msg: "Criado com sucesso com o id de " + id, id });
     } catch (error) {
-      res.status(500).json({ msg: "Internal Server Error" });
+      res.status(500).json({ msg: "Internal Server Error", error });
     }
   }
 }
