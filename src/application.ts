@@ -1,5 +1,5 @@
 import express from "express";
-import { setApplicationRoutes } from "./routes";
+import { setApplicationControllers } from "./controllers";
 import { setDevelopmentMiddlewares, setGlobalMiddlewares } from "./middlewares";
 
 const application = express();
@@ -12,6 +12,6 @@ if (isDevelopment) {
 
 setGlobalMiddlewares(application);
 
-setApplicationRoutes(application);
+setApplicationControllers(application);
 
 export default application;

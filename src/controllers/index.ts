@@ -2,7 +2,7 @@ import { Router, type Express } from "express";
 
 import { createNotebookRouter } from "./notebook/notebook.controller";
 
-export const setApplicationRoutes = (application: Express) => {
+export const setApplicationControllers = (application: Express) => {
   const router = Router();
 
   router.use("/notebook", createNotebookRouter());
