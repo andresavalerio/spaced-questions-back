@@ -1,17 +1,26 @@
 import express from "express";
 import { setApplicationControllers } from "./controllers";
 import { setDevelopmentMiddlewares, setGlobalMiddlewares } from "./middlewares";
+import database from "./database/database";
 
-const application = express();
+const setupDependencies = async () => {
+  await database.initialize();
+};
 
-const isDevelopment = process.env.NODE_ENV === "development";
+export const createApplication = async () => {
+  const application = express();
 
-if (isDevelopment) {
-  setDevelopmentMiddlewares(application);
-}
+  const isDevelopment = process.env.NODE_ENV === "development";
 
-setGlobalMiddlewares(application);
+  if (isDevelopment) {
+    setDevelopmentMiddlewares(application);
+  }
 
-setApplicationControllers(application);
+  await setupDependencies();
 
-export default application;
+  setGlobalMiddlewares(application);
+
+  setApplicationControllers(application);
+
+  return application;
+};

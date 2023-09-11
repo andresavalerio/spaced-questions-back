@@ -1,5 +1,9 @@
-import application from "./application";
+import { createApplication } from "./application";
 
-const port = process.env.PORT ? Number(process.env.PORT) : 5000;
+const applicationPromise = createApplication();
 
-application.listen(port, () => console.log("server running at port " + port));
+applicationPromise.then((application) => {
+  const port = process.env.PORT ? Number(process.env.PORT) : 5000;
+
+  application.listen(port, () => console.log("server running at port " + port));
+});

@@ -8,7 +8,7 @@
     "test": "jest --watchAll --colors --verbose=false --silent=false",
     "test:e2e": "jest --config ./e2e/jest-e2e.json",
     "build": "tsc",
-    "serve": "npm build && node ./dist/main.js"
+    "serve": "npm run build && node ./dist/main.js"
   },
   "keywords": [],
   "author": "",
@@ -32,6 +32,8 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "helmet": "^7.0.0",
+    "sqlite3": "^5.1.6",
+    "typeorm": "^0.3.17",
     "uuid": "^9.0.0"
   }
 }
