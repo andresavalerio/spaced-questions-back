@@ -16,12 +16,12 @@ export class FakeNotebookRepository implements INotebookRepository {
     this.notebooks = [];
   }
 
-  insertNotebook(notebook: Notebook): boolean {
-    if (!notebook.id) return false;
+  insertNotebook(notebook: Notebook): Promise<boolean> {
+    if (!notebook.id) new Promise((resolve) => resolve(false));
 
     this.notebooks.push(notebook);
 
-    return true;
+    return new Promise((resolve) => resolve(true));
   }
 }
 
@@ -36,19 +36,19 @@ describe("NotebookService", () => {
     expect(service).toBeDefined();
   });
 
-  it("should insert notebook", () => {
+  it("should insert notebook", async () => {
     const notebook: CreateNotebookDTO = {
       notes: "lorem ipsum",
       title: "novo caderno",
       username: "pimpim",
     };
 
-    const id = service.createNotebook(notebook);
+    const id = await service.createNotebook(notebook);
 
     expect(id).not.toBeNull();
   });
 
-  it("should not insert notebook with errors", () => {
+  it("should not insert notebook with errors", async () => {
     const notebookWithoutUsername: CreateNotebookDTO = {
       notes: "lorem ipsum",
       title: "novo caderno",
@@ -61,12 +61,12 @@ describe("NotebookService", () => {
       username: "pimpim",
     };
 
-    expect(() => {
-      service.createNotebook(notebookWithoutTitle);
-    }).toThrow(Error);
+    await expect(async () => {
+      await service.createNotebook(notebookWithoutTitle);
+    }).rejects.toThrow(Error);
 
-    expect(() => {
-      service.createNotebook(notebookWithoutUsername);
-    }).toThrow(Error);
+    await expect(async () => {
+      await service.createNotebook(notebookWithoutUsername);
+    }).rejects.toThrow(Error);
   });
 });

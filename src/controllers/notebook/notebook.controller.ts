@@ -12,14 +12,14 @@ export class NotebookController {
     this.service = service;
   }
 
-  createNotebook(req: Request, res: Response) {
+  async createNotebook(req: Request, res: Response) {
     const data = req.body as CreateNotebookDTO;
 
     if (!data.username)
       return res.status(400).json({ msg: "dados incorretos" });
 
     try {
-      const id = this.service.createNotebook(data);
+      const id = await this.service.createNotebook(data);
 
       res.status(200).json({ msg: "Criado com sucesso com o id de " + id, id });
     } catch (error) {
@@ -35,8 +35,8 @@ export const createNotebookRouter = () => {
 
   const router = Router();
 
-  router.post("/", (req, res) => {
-    controller.createNotebook(req, res);
+  router.post("/", async (req, res) => {
+    await controller.createNotebook(req, res);
   });
 
   return router;

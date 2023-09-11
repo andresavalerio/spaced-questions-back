@@ -18,7 +18,7 @@ export class NotebookService implements INotebookService {
     this.repository = repository;
   }
 
-  createNotebook(notebook: CreateNotebookDTO): string {
+  async createNotebook(notebook: CreateNotebookDTO): Promise<string> {
     if (notebook.title.length === 0) {
       throw new NotebookWithoutTitleError();
     }
@@ -29,7 +29,7 @@ export class NotebookService implements INotebookService {
 
     const id = uuid();
 
-    const success = this.repository.insertNotebook({ ...notebook, id });
+    const success = await this.repository.insertNotebook({ ...notebook, id });
 
     if (!success) throw new NotebookInsertError();
 

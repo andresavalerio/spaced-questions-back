@@ -12,9 +12,9 @@ export interface Notebook {
 }
 
 export interface INotebookService {
-  createNotebook(notebook: CreateNotebookDTO): string;
+  createNotebook(notebook: CreateNotebookDTO): Promise<string>;
 }
 
 export interface INotebookRepository {
-  insertNotebook(notebook: Notebook): boolean;
+  insertNotebook(notebook: Notebook): Promise<boolean>;
 }

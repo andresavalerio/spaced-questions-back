@@ -7,8 +7,8 @@ import { NotebookController } from "./notebook.controller";
 import request from "supertest";
 
 class FakeNotebookService implements INotebookService {
-  createNotebook(notebook: CreateNotebookDTO): string {
-    return "new-id";
+  async createNotebook(notebook: CreateNotebookDTO): Promise<string> {
+    return new Promise((resolve) => resolve("new-id"));
   }
 }
 
@@ -28,8 +28,8 @@ describe("NotebookController", () => {
 
     const controller = new NotebookController(new FakeNotebookService());
 
-    application.post("/", (req, res) => {
-      controller.createNotebook(req, res);
+    application.post("/", async (req, res) => {
+      await controller.createNotebook(req, res);
     });
   });
 
