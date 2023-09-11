@@ -4,8 +4,9 @@ import {
 } from "../../interfaces/notebook.interface";
 import { type Response, type Request, Router } from "express";
 import { createNotebookService } from "../../services/notebook/notebook.service";
+import { IController } from "../../interfaces/controller.interface";
 
-export class NotebookController {
+export class NotebookController implements IController {
   private service: INotebookService;
 
   constructor(service: INotebookService) {
@@ -26,18 +27,22 @@ export class NotebookController {
       res.status(500).json({ msg: "Internal Server Error", error });
     }
   }
+
+  getRouter(): Router {
+    const router = Router();
+
+    router.post("/", async (req, res) => {
+      await this.createNotebook(req, res);
+    });
+
+    return router;
+  }
 }
 
-export const createNotebookRouter = () => {
-  const service = createNotebookService();
+export const createNotebookRouter = (): Router => {
+  const service: INotebookService = createNotebookService();
 
   const controller = new NotebookController(service);
 
-  const router = Router();
-
-  router.post("/", async (req, res) => {
-    await controller.createNotebook(req, res);
-  });
-
-  return router;
+  return controller.getRouter();
 };

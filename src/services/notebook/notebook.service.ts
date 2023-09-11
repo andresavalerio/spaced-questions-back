@@ -37,7 +37,7 @@ export class NotebookService implements INotebookService {
   }
 }
 
-export const createNotebookService = () => {
+export const createNotebookService = (): INotebookService => {
   const repository = new NotebookRepository();
 
   return new NotebookService(repository);

@@ -28,9 +28,9 @@ describe("NotebookController", () => {
 
     const controller = new NotebookController(new FakeNotebookService());
 
-    application.post("/", async (req, res) => {
-      await controller.createNotebook(req, res);
-    });
+    const router = controller.getRouter();
+
+    application.use("/", router);
   });
 
   it("should be defined", () => {
