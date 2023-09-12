@@ -4,24 +4,25 @@ import {
   INotebookRepository,
   Notebook,
 } from "../../interfaces/notebook.interface";
-import { NotebookModel } from "../../models/notebook.model";
+import {
+  NotebookInsertError,
+  NotebookWithoutIdError,
+} from "../../errors/notebook.errors";
 
 export class NotebookRepository implements INotebookRepository {
-  private repository: Repository<NotebookModel>;
+  private repository: Repository<Notebook>;
 
   constructor() {
-    this.repository = database.getRepository(NotebookModel);
+    this.repository = database.getRepository(Notebook);
   }
 
-  async insertNotebook(notebook: Notebook): Promise<boolean> {
-    if (!notebook.id) return false;
+  async insertNotebook(notebook: Notebook): Promise<void> {
+    if (!notebook.id) throw new NotebookWithoutIdError();
 
     try {
       await this.repository.save(notebook);
     } catch (error) {
-      return false;
-    } finally {
-      return true;
+      throw new NotebookInsertError();
     }
   }
 }

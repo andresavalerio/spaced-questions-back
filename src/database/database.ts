@@ -1,10 +1,10 @@
 import { DataSource } from "typeorm";
+import { join } from "node:path";
 
 const database = new DataSource({
   type: "sqlite",
-  entities: ["**/*.model.ts"],
+  entities: [join(__dirname, "..", "**/*.schema.{js,ts}")],
   database: "./database.sqlite",
-  synchronize: true,
 });
 
 export default database;

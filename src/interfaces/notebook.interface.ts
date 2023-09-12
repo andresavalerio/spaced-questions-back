@@ -4,11 +4,11 @@ export interface CreateNotebookDTO {
   username: string;
 }
 
-export interface Notebook {
-  id: string;
-  title: string;
-  notes: string;
-  username: string;
+export abstract class Notebook {
+  id!: string;
+  title!: string;
+  notes?: string;
+  username!: string;
 }
 
 export interface INotebookService {
@@ -16,5 +16,5 @@ export interface INotebookService {
 }
 
 export interface INotebookRepository {
-  insertNotebook(notebook: Notebook): Promise<boolean>;
+  insertNotebook(notebook: Notebook): Promise<void>;
 }

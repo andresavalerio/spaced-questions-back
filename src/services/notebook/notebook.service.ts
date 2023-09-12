@@ -29,9 +29,7 @@ export class NotebookService implements INotebookService {
 
     const id = uuid();
 
-    const success = await this.repository.insertNotebook({ ...notebook, id });
-
-    if (!success) throw new NotebookInsertError();
+    await this.repository.insertNotebook({ ...notebook, id });
 
     return id;
   }

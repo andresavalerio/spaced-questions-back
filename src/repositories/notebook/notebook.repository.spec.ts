@@ -1,37 +1,62 @@
 import { Repository } from "typeorm";
 import database from "../../database/database";
 import { NotebookRepository } from "./notebook.repository";
-import { NotebookModel } from "../../models/notebook.model";
+import { Notebook } from "../../interfaces/notebook.interface";
+import { NotebookWithoutIdError } from "../../errors/notebook.errors";
 
 describe("NotebookRepository", () => {
   let repository: NotebookRepository;
-  let databaseRepository: Repository<NotebookModel>;
+  let notebookRepository: Repository<Notebook>;
 
-  beforeEach(async () => {
-    await database.initialize();
-  });
+  beforeAll(async () => {
+    const initializedDatabase = await database.initialize();
 
-  beforeEach(async () => {
+    await initializedDatabase.dropDatabase();
+
+    await initializedDatabase.synchronize(true);
+
     repository = new NotebookRepository();
 
-    databaseRepository = database.getRepository(NotebookModel);
+    notebookRepository = database.getRepository(Notebook);
 
-    await databaseRepository.delete("1");
+    await notebookRepository.find();
   });
 
   it("should be defined", async () => {
-    const result = await repository.insertNotebook({
+    expect(repository).toBeDefined();
+  });
+
+  it("should insert notebook", async () => {
+    await notebookRepository.delete("1");
+
+    await repository.insertNotebook({
       id: "1",
       notes: "abc",
       title: "abc",
       username: "abc",
     });
 
-    expect(result).toBeTruthy();
-
-    const notebook = await databaseRepository.findOne({ where: { id: "1" } });
+    const notebook = await notebookRepository.findOne({ where: { id: "1" } });
 
     expect(notebook).toBeDefined();
+
     expect(notebook?.id).toBe("1");
+  });
+
+  it("should not insert notebook", async () => {
+    await notebookRepository.delete("1");
+
+    await expect(async () => {
+      await repository.insertNotebook({
+        id: "",
+        notes: "abc",
+        title: "abc",
+        username: "abc",
+      });
+    }).rejects.toThrow(NotebookWithoutIdError);
+
+    const notebook = await notebookRepository.findOne({ where: { id: "1" } });
+
+    expect(notebook).toBeNull();
   });
 });

@@ -4,7 +4,9 @@ import * as middlewares from "./middlewares";
 import database from "./database/database";
 
 const setupDependencies = async () => {
-  await database.initialize();
+  const initializedDatabase = await database.initialize();
+
+  initializedDatabase.synchronize(true);
 };
 
 export const createApplication = async (): Promise<Express> => {

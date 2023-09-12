@@ -4,9 +4,13 @@
   "description": "",
   "main": "src/main.ts",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon src/main.ts",
-    "test": "jest --watch --colors --verbose=false --silent=false",
+    "start": "ts-node src/main.ts",
+    "start:dev": "NODE_ENV=development nodemon src/main.ts",
+    "start:prd": "NODE_ENV=production node dist/main.js",
+    "test": "jest",
+    "test:watch": "jest --watchAll --colors --verbose=false --silent=false",
     "test:e2e": "jest --config ./e2e/jest-e2e.json",
+    "test:all": "jest && jest --config ./e2e/jest-e2e.json",
     "build": "tsc",
     "serve": "node ./dist/main.js"
   },
@@ -33,6 +37,7 @@
     "express": "^4.18.2",
     "express-rate-limit": "^6.11.1",
     "helmet": "^7.0.0",
+    "reflect-metadata": "^0.1.13",
     "sqlite3": "^5.1.6",
     "typeorm": "^0.3.17",
     "uuid": "^9.0.0"

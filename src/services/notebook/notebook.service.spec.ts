@@ -4,6 +4,7 @@ import {
   INotebookRepository,
   Notebook,
 } from "../../interfaces/notebook.interface";
+
 import {
   NotebookWithoutTitleError,
   NotebookWithoutUsernameError,
@@ -16,12 +17,8 @@ export class FakeNotebookRepository implements INotebookRepository {
     this.notebooks = [];
   }
 
-  insertNotebook(notebook: Notebook): Promise<boolean> {
-    if (!notebook.id) new Promise((resolve) => resolve(false));
-
-    this.notebooks.push(notebook);
-
-    return new Promise((resolve) => resolve(true));
+  insertNotebook(notebook: Notebook): Promise<void> {
+    return new Promise((resolve) => resolve());
   }
 }
 
@@ -63,10 +60,10 @@ describe("NotebookService", () => {
 
     await expect(async () => {
       await service.createNotebook(notebookWithoutTitle);
-    }).rejects.toThrow(Error);
+    }).rejects.toThrow(NotebookWithoutTitleError);
 
     await expect(async () => {
       await service.createNotebook(notebookWithoutUsername);
-    }).rejects.toThrow(Error);
+    }).rejects.toThrow(NotebookWithoutUsernameError);
   });
 });

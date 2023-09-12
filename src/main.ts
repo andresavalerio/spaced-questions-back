@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { createApplication } from "./application";
 
 const applicationPromise = createApplication();
