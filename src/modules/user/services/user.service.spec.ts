@@ -4,12 +4,14 @@ describe("UserService", () => {
   let userService: UserService;
 
   beforeAll(() => {
-    userService = new UserService();
+    userService = new UserService({
+      insertUser: jest.fn(),
+    });
   });
 
   it("shoud be defined", () => {
     expect(userService).toBeDefined();
   });
 
-  it("shoud create user", () => {});
+  
 });

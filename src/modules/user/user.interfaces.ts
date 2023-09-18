@@ -16,11 +16,20 @@ export interface LoginUserDTO {
   password: string;
 }
 
-export interface IUserService {
-  createUser(user: CreateUserDTO): void;
+
+export interface LoginUserResponseDTO {
+  user : User;
+  token : string;
 }
 
-export interface IUserRepository {}
+export interface IUserService {
+  createUser(user: CreateUserDTO): Promise<User>;
+  loginUser(user: LoginUserDTO): Promise<LoginUserResponseDTO>;
+}
+
+export interface IUserRepository {
+  insertUser(user: User): Promise<void>;
+}
 
 export abstract class User {
   username!: string;
