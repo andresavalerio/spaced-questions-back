@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 
 export interface CreateNotebookDTO {
-  notebookName: string;
+  name: string;
   owner: string;
 }
 
@@ -14,7 +14,7 @@ export interface INotebookRepository {
 }
 
 export abstract class Notebook {
-  notebookId!: string;
-  notebookName!: string;
+  id!: string;
+  name!: string;
   owner!: string;
 }
