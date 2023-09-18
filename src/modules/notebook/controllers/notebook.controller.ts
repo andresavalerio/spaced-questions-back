@@ -6,23 +6,22 @@ export class NotebookController {
   constructor(private notebookService: NotebookService) {}
 
   async createNotebook(req: Request, res: Response) {
-    const { notebookName, owner } = req.body;
-    const notebookData: CreateNotebookDTO = {
-      notebookName,
-      owner,
-    };
+    const { name, owner } = req.body as CreateNotebookDTO;
 
-    // Validação dos campos
-    if (!notebookName) {
+    // Validaï¿½ï¿½o dos campos
+    if (!name) {
       return res.status(400).send("Name is required");
     }
-    
+
     if (!owner) {
       return res.status(400).send("Content is required");
     }
 
     try {
-      const newNotebook = await this.notebookService.createNotebook(notebookData);
+      const newNotebook = await this.notebookService.createNotebook({
+        name,
+        owner,
+      });
       return res.status(201).json(newNotebook);
     } catch (error) {
       return res.status(500).send();

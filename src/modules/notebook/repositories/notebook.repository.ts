@@ -1,11 +1,16 @@
-import { getRepository, Repository } from "typeorm";
-import { Notebook, CreateNotebookDTO, INotebookRepository } from "../notebook.interfaces";
+import { Repository } from "typeorm";
+import {
+  Notebook,
+  CreateNotebookDTO,
+  INotebookRepository,
+} from "../notebook.interfaces";
+import database from "database/database";
 
 export class NotebookRepository implements INotebookRepository {
   private notebookRepository: Repository<Notebook>;
 
   constructor() {
-    this.notebookRepository = getRepository(Notebook);
+    this.notebookRepository = database.getRepository(Notebook);
   }
 
   async createNotebook(notebookDTO: CreateNotebookDTO): Promise<Notebook> {
