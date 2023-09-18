@@ -7,10 +7,12 @@ export interface CreateNotebookDTO {
 
 export interface INotebookService {
   createNotebook(notebook: CreateNotebookDTO): void;
+  getNotebooksByOwner(owner: string): Promise<Notebook[]>;
 }
 
 export interface INotebookRepository {
   createNotebook(notebook: CreateNotebookDTO): Promise<Notebook>;
+  getNotebooksByOwner(owner: string): Promise<Notebook[]>;
 }
 
 export abstract class Notebook {

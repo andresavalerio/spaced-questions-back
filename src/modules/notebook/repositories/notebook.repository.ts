@@ -18,4 +18,8 @@ export class NotebookRepository implements INotebookRepository {
 
     return await this.notebookRepository.save(notebook);
   }
+
+  async getNotebooksByOwner(owner: string): Promise<Notebook[]> {
+    return await this.notebookRepository.find({ where: { owner } });
+  }
 }
