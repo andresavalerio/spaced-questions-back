@@ -13,12 +13,13 @@ CREATE TABLE User (
     username text NOT NULL,
     email text NOT NULL,
     pass text NOT NULL,
-    createdAt timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     firstName text NOT NULL,
     lastName text NOT NULL,
-    active boolean NOT NULL,
+    
     photoURL text NOT NULL,
-    userRole UserRole DEFAULT 'Free',
+    active boolean NOT NULL,
+    userRole UserRole,
+    createdAt timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (username)
 );
 CREATE TABLE Accounting (
@@ -66,7 +67,7 @@ CREATE TABLE FlashcardExecution (
     flashcardId text NOT NULL,
     datetimeExec timestamp with time zone DEFAULT CURRENT_TIMESTAMP userInput text NOT NULL,
     timeElapsed time NOT NULL,
-    answerDiff text NOT NULL,
+    anwserDiff text NOT NULL,
     systemRating Rating NOT NULL,
     userRating Rating NOT NULL,
     PRIMARY KEY (flashcardId, datetimeExec),

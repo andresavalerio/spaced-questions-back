@@ -1,7 +1,7 @@
 import express, { type Express } from "express";
-import { setApplicationControllers } from "./controllers";
 import * as middlewares from "./middlewares";
-import database from "./database/database";
+import database from "database/database";
+import { setApplicationModules } from "modules";
 
 const setupDependencies = async () => {
   const initializedDatabase = await database.initialize();
@@ -9,7 +9,7 @@ const setupDependencies = async () => {
   initializedDatabase.synchronize(true);
 };
 
-export const createApplication = async (): Promise<Express> => {
+export const createApplicationAsync = async (): Promise<Express> => {
   const application = express();
 
   const isDevelopment = process.env.NODE_ENV === "development";
@@ -23,7 +23,7 @@ export const createApplication = async (): Promise<Express> => {
 
   middlewares.setGlobalMiddlewares(application);
 
-  setApplicationControllers(application);
+  setApplicationModules(application);
 
   return application;
 };

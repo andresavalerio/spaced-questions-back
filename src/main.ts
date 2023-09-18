@@ -1,8 +1,8 @@
 import "reflect-metadata";
 
-import { createApplication } from "./application";
+import { createApplicationAsync } from "./application";
 
-const applicationPromise = createApplication();
+const applicationPromise = createApplicationAsync();
 
 applicationPromise.then((application) => {
   const port = process.env.PORT ? Number(process.env.PORT) : 5000;
