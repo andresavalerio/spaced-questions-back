@@ -15,6 +15,7 @@ export class NotebookRepository implements INotebookRepository {
 
   async createNotebook(notebookDTO: CreateNotebookDTO): Promise<Notebook> {
     const notebook = this.notebookRepository.create(notebookDTO);
+
     return await this.notebookRepository.save(notebook);
   }
 }

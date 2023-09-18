@@ -30,9 +30,11 @@ export class NotebookController {
 
   getRouter(): Router {
     const router = Router();
+
     router.post("/", async (req, res) => {
       await this.createNotebook(req, res);
     });
+
     return router;
   }
 }
