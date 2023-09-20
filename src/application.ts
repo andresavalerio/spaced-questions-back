@@ -4,9 +4,7 @@ import database from "database/database";
 import { setApplicationModules } from "modules";
 
 const setupDependencies = async () => {
-  const initializedDatabase = await database.initialize();
-
-  initializedDatabase.synchronize(true);
+  await database.initialize();
 };
 
 export const createApplicationAsync = async (): Promise<Express> => {

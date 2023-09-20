@@ -10,25 +10,27 @@ export interface CreateUserDTO {
   lastName: string;
 }
 
-export interface LoginUserDTO {
+export interface UserLoginDTO {
   username?: string;
   email?: string;
   password: string;
 }
 
-
 export interface LoginUserResponseDTO {
-  user : User;
-  token : string;
+  user: User;
+  token: string;
 }
 
 export interface IUserService {
   createUser(user: CreateUserDTO): Promise<User>;
-  loginUser(user: LoginUserDTO): Promise<LoginUserResponseDTO>;
+  loginUser(user: UserLoginDTO): Promise<LoginUserResponseDTO>;
 }
 
 export interface IUserRepository {
-  insertUser(user: User): Promise<void>;
+  save(user: User): Promise<User>;
+  existsByUsername(username: string): Promise<boolean>;
+  getByUsername(username: string): Promise<User>;
+  getByEmail(email: string): Promise<User>;
 }
 
 export abstract class User {
@@ -40,4 +42,18 @@ export abstract class User {
   active!: boolean;
   userRole!: UserRole;
   createdAt!: Date;
+}
+
+export interface UserTokenDTO {
+  username: string;
+  email: string;
+  active: boolean;
+  userRole: UserRole;
+}
+
+export interface IAuthService {
+  createToken(payload: UserTokenDTO): string;
+  verifyToken(token: string): UserTokenDTO;
+  createDecodedPassword(rawPassword: string): string;
+  verifyPasswords(rawPassword: string, decodedPassword: string): boolean;
 }

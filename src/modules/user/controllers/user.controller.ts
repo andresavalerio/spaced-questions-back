@@ -1,8 +1,11 @@
 import { type Response, type Request, Router } from "express";
 import { IController } from "../../../interfaces/controller.interface";
-import { UserAlreadyExistsError } from "../user.errors";
-import { UserService } from "../services/user.service";
-import { CreateUserDTO, IUserService } from "../user.interfaces";
+import {
+  UserDuplicateError,
+  UserNotFoundError,
+  UserWrongPasswordError,
+} from "../user.errors";
+import { CreateUserDTO, IUserService, UserLoginDTO } from "../user.interfaces";
 
 export class UserController implements IController {
   private userService: IUserService;
@@ -11,7 +14,7 @@ export class UserController implements IController {
     this.userService = userService;
   }
 
-  createUser(req: Request, res: Response) {
+  async createUser(req: Request, res: Response) {
     const createUserData = req.body as CreateUserDTO;
 
     const toVerifyKeys: Array<keyof CreateUserDTO> = [
@@ -23,26 +26,54 @@ export class UserController implements IController {
     ];
 
     for (const key of toVerifyKeys)
-      if (!createUserData[key]) return res.status(400).send();
+      if (!createUserData[key])
+        return res.status(400).json({ msg: `missing value "${key}"` });
 
     try {
-      this.userService.createUser(createUserData);
+      const createdUser = await this.userService.createUser(createUserData);
 
-      return res.status(204).send();
+      if (createdUser.password) createdUser.password = "";
+
+      return res.status(200).json(createdUser);
     } catch (error) {
-      if (error instanceof UserAlreadyExistsError) {
-        return res.status(409).send();
+      if (error instanceof UserDuplicateError) {
+        return res.status(409).json({ msg: "duplicated user" });
       } else {
-        return res.status(500).send();
+        return res.status(500).json();
       }
+    }
+  }
+
+  async loginUser(req: Request, res: Response) {
+    const loginUserData = req.body as UserLoginDTO;
+
+    const hasEmail = !!loginUserData.email;
+    const hasUsernmae = !!loginUserData.username;
+    const hasPassword = !!loginUserData.password;
+
+    if (!hasEmail && !hasUsernmae) return res.status(400).json();
+    if (!hasPassword) return res.status(400).json();
+
+    try {
+      const result = await this.userService.loginUser(loginUserData);
+
+      res.status(200).json(result);
+    } catch (error) {
+      if (error instanceof UserNotFoundError) res.status(409).json();
+      else if (error instanceof UserWrongPasswordError) res.status(401).json();
+      else res.status(500).json();
     }
   }
 
   getRouter(): Router {
     const router = Router();
 
-    router.post("/", (req, res) => {
-      this.createUser(req, res);
+    router.post("/", async (req, res) => {
+      await this.createUser(req, res);
+    });
+
+    router.post("/login", async (req, res) => {
+      await this.loginUser(req, res);
     });
 
     return router;
