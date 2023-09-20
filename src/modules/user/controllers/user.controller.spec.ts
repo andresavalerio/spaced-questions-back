@@ -106,14 +106,14 @@ describe("UserController", () => {
   });
 
   describe("loginUser", () => {
-    it("should login user, and response it data", async () => {
+    it("should login user with username or email, and response it data", async () => {
       jest.spyOn(service, "loginUser").mockResolvedValue({
         token: "token",
         user: {} as User,
       });
 
       await requestLoginUser({
-        username: "username",
+        login: "username",
         password: "password",
       })
         .expect(200)
@@ -123,7 +123,7 @@ describe("UserController", () => {
         });
 
       await requestLoginUser({
-        email: "email",
+        login: "email",
         password: "password",
       })
         .expect(200)
@@ -133,18 +133,9 @@ describe("UserController", () => {
         });
     });
 
-    it("should not login user, when password or username not provided, reponse with status 400", async () => {
-      await requestLoginUser({
-        password: "123",
-        email: "",
-        username: "",
-      }).expect(400);
-
-      await requestLoginUser({
-        password: "",
-        email: "123",
-        username: "",
-      }).expect(400);
+    it("should not login user, when password or login not provided, reponse with status 400", async () => {
+      await requestLoginUser({ password: "123", login: "" }).expect(400);
+      await requestLoginUser({ password: "", login: "123" }).expect(400);
     });
 
     it("should not login user, when him not exits, response with status 409", async () => {
@@ -152,10 +143,9 @@ describe("UserController", () => {
         .spyOn(service, "loginUser")
         .mockRejectedValue(new UserNotFoundError());
 
-      await requestLoginUser({
-        password: "password",
-        email: "email",
-      }).expect(409);
+      await requestLoginUser({ password: "password", login: "email" }).expect(
+        409
+      );
     });
   });
 });

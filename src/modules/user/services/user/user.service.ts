@@ -44,11 +44,10 @@ export class UserService implements IUserService {
   public async loginUser(user: UserLoginDTO): Promise<LoginUserResponseDTO> {
     let userFound: User | null = null;
 
-    if (user.username) {
-      userFound = await this.userRepository.getByUsername(user.username);
-    } else if (user.email) {
-      userFound = await this.userRepository.getByEmail(user.email);
-    }
+    userFound = await this.userRepository.getByUsername(user.login);
+
+    if (!userFound)
+      userFound = await this.userRepository.getByEmail(user.login);
 
     if (!userFound) throw new UserNotFoundError();
 

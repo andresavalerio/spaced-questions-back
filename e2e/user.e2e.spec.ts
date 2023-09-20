@@ -67,12 +67,22 @@ describe("UserRoute (e2e)", () => {
   });
 
   describe("loginUser", () => {
-    it("should login user, and response it data", async () => {
+    it("should login user with username or email, and response it data", async () => {
       await requestCreateUser(baseCreateUserData).expect(200);
 
       await requestLoginUser({
         password: baseCreateUserData.password,
-        username: baseCreateUserData.username,
+        login: baseCreateUserData.username,
+      })
+        .expect(200)
+        .then((response) => {
+          expect(response.body.token).toBeDefined();
+          expect(response.body.user).toBeDefined();
+        });
+
+      await requestLoginUser({
+        password: baseCreateUserData.password,
+        login: baseCreateUserData.email,
       })
         .expect(200)
         .then((response) => {
@@ -86,7 +96,7 @@ describe("UserRoute (e2e)", () => {
 
       await requestLoginUser({
         password: "",
-        username: baseCreateUserData.username,
+        login: baseCreateUserData.username,
       }).expect(400);
     });
 
@@ -95,14 +105,14 @@ describe("UserRoute (e2e)", () => {
 
       await requestLoginUser({
         password: baseCreateUserData.password + "@",
-        username: baseCreateUserData.username,
+        login: baseCreateUserData.username,
       }).expect(401);
     });
 
     it("should not login user, when him not exits, response with status 409", async () => {
       await requestLoginUser({
         password: baseCreateUserData.password,
-        username: baseCreateUserData.username,
+        login: baseCreateUserData.username,
       }).expect(409);
     });
   });

@@ -94,7 +94,7 @@ describe("UserService", () => {
         .mockResolvedValue({ password: "123" } as User);
 
       const response = await service.loginUser({
-        email: "mail.com",
+        login: "mail.com",
         password: "123",
       });
 
@@ -112,7 +112,7 @@ describe("UserService", () => {
       jest.spyOn(userRepository, "getByUsername").mockResolvedValue({} as User);
 
       const response = await service.loginUser({
-        username: "username",
+        login: "username",
         password: "123",
       });
 
@@ -130,7 +130,7 @@ describe("UserService", () => {
 
       await expect(async () => {
         await service.loginUser({
-          username: "username",
+          login: "username",
           password: "123",
         });
       }).rejects.toThrow(UserNotFoundError);
@@ -149,7 +149,7 @@ describe("UserService", () => {
 
       await expect(async () => {
         await service.loginUser({
-          username: "username",
+          login: "username",
           password: "123",
         });
       }).rejects.toThrow(UserWrongPasswordError);

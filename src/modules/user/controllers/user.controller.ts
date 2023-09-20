@@ -47,11 +47,10 @@ export class UserController implements IController {
   async loginUser(req: Request, res: Response) {
     const loginUserData = req.body as UserLoginDTO;
 
-    const hasEmail = !!loginUserData.email;
-    const hasUsernmae = !!loginUserData.username;
+    const hasLogin = !!loginUserData.login;
     const hasPassword = !!loginUserData.password;
 
-    if (!hasEmail && !hasUsernmae) return res.status(400).json();
+    if (!hasLogin) return res.status(400).json();
     if (!hasPassword) return res.status(400).json();
 
     try {
