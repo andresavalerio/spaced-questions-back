@@ -26,7 +26,7 @@ export class UserController implements IController {
 
     for (const key of toVerifyKeys)
       if (!createUserData[key])
-        return res.status(400).json({ msg: `missing value "${key}"` });
+        return res.status(400).json({ msg: `missing ${key} value` });
 
     try {
       const createdUser = await this.userService.createUser(createUserData);
@@ -49,16 +49,19 @@ export class UserController implements IController {
     const hasLogin = !!loginUserData.login;
     const hasPassword = !!loginUserData.password;
 
-    if (!hasLogin) return res.status(400).json();
-    if (!hasPassword) return res.status(400).json();
+    if (!hasLogin) return res.status(400).json({ msg: "missing login value" });
+    if (!hasPassword)
+      return res.status(400).json({ msg: "missing password value" });
 
     try {
       const result = await this.userService.loginUser(loginUserData);
 
       res.status(200).json(result);
     } catch (error) {
-      if (error instanceof UserNotFoundError) res.status(409).json();
-      else if (error instanceof UserWrongPasswordError) res.status(401).json();
+      if (error instanceof UserNotFoundError)
+        res.status(409).json({ msg: "user not found" });
+      else if (error instanceof UserWrongPasswordError)
+        res.status(401).json({ msg: "unauthorized user" });
       else res.status(500).json();
     }
   }

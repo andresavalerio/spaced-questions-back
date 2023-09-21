@@ -131,8 +131,17 @@ describe("UserController", () => {
     });
 
     it("should not login user, when password or login not provided, reponse with status 400", async () => {
-      await requestLoginUser({ password: "123", login: "" }).expect(400);
-      await requestLoginUser({ password: "", login: "123" }).expect(400);
+      await requestLoginUser({ password: "123", login: "" })
+        .expect(400)
+        .then((error) => {
+          expect(error.body.msg).toBe("missing login value");
+        });
+
+      await requestLoginUser({ password: "", login: "123" })
+        .expect(400)
+        .then((error) => {
+          expect(error.body.msg).toBe("missing password value");
+        });
     });
 
     it("should not login user, when him not exits, response with status 409", async () => {
@@ -140,9 +149,11 @@ describe("UserController", () => {
         .spyOn(service, "loginUser")
         .mockRejectedValue(new UserNotFoundError());
 
-      await requestLoginUser({ password: "password", login: "email" }).expect(
-        409
-      );
+      await requestLoginUser({ password: "password", login: "email" })
+        .expect(409)
+        .then((error) => {
+          expect(error.body.msg).toBe("user not found");
+        });
     });
   });
 });

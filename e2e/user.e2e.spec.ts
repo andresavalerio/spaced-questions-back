@@ -51,7 +51,10 @@ describe("UserRoute (e2e)", () => {
         await request(application)
           .post("/api/user")
           .send({ ...baseCreateUserData, [key]: "" })
-          .expect(400);
+          .expect(400)
+          .then((error) => {
+            expect(error.body.msg).toBe(`missing ${key} value`);
+          });
     });
 
     it("should not create duplicated user", async () => {
@@ -62,7 +65,11 @@ describe("UserRoute (e2e)", () => {
         email: simpleUser.email,
         fullName: simpleUser.fullName,
         password: simpleUser.password,
-      }).expect(409);
+      })
+        .expect(409)
+        .then((error) => {
+          expect(error.body.msg).toBe("duplicated user");
+        });
     });
   });
 
@@ -91,13 +98,26 @@ describe("UserRoute (e2e)", () => {
         });
     });
 
-    it("should not login user, when password or username not provided", async () => {
+    it("should not login user, when password or login not provided", async () => {
       await requestCreateUser(baseCreateUserData).expect(200);
 
       await requestLoginUser({
         password: "",
         login: baseCreateUserData.username,
-      }).expect(400);
+      })
+        .expect(400)
+        .then((error) => {
+          expect(error.body.msg).toBe("missing password value");
+        });
+
+      await requestLoginUser({
+        password: baseCreateUserData.password,
+        login: "",
+      })
+        .expect(400)
+        .then((error) => {
+          expect(error.body.msg).toBe("missing login value");
+        });
     });
 
     it("should not login user, when password is wrong", async () => {
@@ -106,14 +126,22 @@ describe("UserRoute (e2e)", () => {
       await requestLoginUser({
         password: baseCreateUserData.password + "@",
         login: baseCreateUserData.username,
-      }).expect(401);
+      })
+        .expect(401)
+        .then((error) => {
+          expect(error.body.msg).toBe("unauthorized user");
+        });
     });
 
     it("should not login user, when him not exits, response with status 409", async () => {
       await requestLoginUser({
         password: baseCreateUserData.password,
         login: baseCreateUserData.username,
-      }).expect(409);
+      })
+        .expect(409)
+        .then((error) => {
+          expect(error.body.msg).toBe("user not found");
+        });
     });
   });
 });
