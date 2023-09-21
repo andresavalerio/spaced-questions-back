@@ -10,8 +10,7 @@ export const createSimpleUser = (): Promise<User> =>
     active: true,
     createdAt: new Date(),
     email: "email",
-    firstName: "first",
-    lastName: "last",
+    fullName: "full name",
     password: "password",
     username: "username",
     userRole: "Free",
@@ -21,12 +20,5 @@ export const baseCreateUserData: CreateUserDTO = {
   username: "vjchave",
   email: "vjchave@gmail.com",
   password: "123456",
-  firstName: "victor",
-  lastName: "chaves",
-};
-
-export const baseLoginUserData: UserLoginDTO = {
-  username: "vjchave",
-  email: "vjchave@gmail.com",
-  password: "123456",
+  fullName: "victor chaves",
 };

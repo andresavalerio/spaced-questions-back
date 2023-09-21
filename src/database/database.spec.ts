@@ -7,8 +7,6 @@ describe("database", () => {
 
       await initializedDatabase.destroy();
     } catch (error) {
-      console.log(error);
-
       throw error;
     }
   });

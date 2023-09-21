@@ -43,6 +43,7 @@ describe("UserRoute (e2e)", () => {
       expect(createdUser?.active).toBeTruthy();
       expect(createdUser?.password).toBeDefined();
       expect(createdUser?.password).not.toBe(baseCreateUserData.password);
+      expect(createdUser?.email).toBe(baseCreateUserData.email);
     });
 
     it("should not create user without any base data", async () => {
@@ -59,8 +60,7 @@ describe("UserRoute (e2e)", () => {
       await requestCreateUser({
         username: simpleUser.username,
         email: simpleUser.email,
-        firstName: simpleUser.firstName,
-        lastName: simpleUser.lastName,
+        fullName: simpleUser.fullName,
         password: simpleUser.password,
       }).expect(409);
     });

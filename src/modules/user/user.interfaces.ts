@@ -6,8 +6,7 @@ export interface CreateUserDTO {
   username: string;
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
 }
 
 export interface UserLoginDTO {
@@ -28,16 +27,15 @@ export interface IUserService {
 export interface IUserRepository {
   save(user: User): Promise<User>;
   existsByUsername(username: string): Promise<boolean>;
-  getByUsername(username: string): Promise<User>;
-  getByEmail(email: string): Promise<User>;
+  getByUsername(username: string): Promise<User | null>;
+  getByEmail(email: string): Promise<User | null>;
 }
 
 export abstract class User {
   username!: string;
   email!: string;
   password!: string;
-  firstName!: string;
-  lastName!: string;
+  fullName!: string;
   active!: boolean;
   userRole!: UserRole;
   createdAt!: Date;

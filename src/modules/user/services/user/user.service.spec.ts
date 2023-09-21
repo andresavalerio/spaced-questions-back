@@ -46,8 +46,7 @@ describe("UserService", () => {
   describe("createUser", () => {
     const createUserData: CreateUserDTO = {
       email: "email@mail.com",
-      firstName: "first",
-      lastName: "last",
+      fullName: "full name",
       password: "pass",
       username: "username",
     };

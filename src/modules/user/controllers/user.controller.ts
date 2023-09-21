@@ -19,8 +19,7 @@ export class UserController implements IController {
 
     const toVerifyKeys: Array<keyof CreateUserDTO> = [
       "email",
-      "firstName",
-      "lastName",
+      "fullName",
       "password",
       "username",
     ];

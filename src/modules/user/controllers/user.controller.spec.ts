@@ -7,16 +7,14 @@ import {
   User,
   UserLoginDTO,
   UserRole,
-  UserTokenDTO,
 } from "../user.interfaces";
 import { UserDuplicateError, UserNotFoundError } from "../user.errors";
 
-const baseCreateUserData = {
+const baseCreateUserData: CreateUserDTO = {
   username: "vjchave",
   email: "vjchave@gmail.com",
   password: "123456",
-  firstName: "victor",
-  lastName: "chaves",
+  fullName: "victor chaves",
 };
 
 describe("UserController", () => {
@@ -77,8 +75,7 @@ describe("UserController", () => {
     it("should not create user without some property", async () => {
       const toNullifyKeys: Array<keyof CreateUserDTO> = [
         "email",
-        "firstName",
-        "lastName",
+        "fullName",
         "password",
         "username",
       ];
