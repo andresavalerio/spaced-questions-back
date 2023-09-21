@@ -1,4 +1,4 @@
-import { response, type Express } from "express";
+import { type Express } from "express";
 import { database, restartDatabase } from "./database.fixture";
 import request from "supertest";
 import { createApplicationAsync } from "../src/application";
@@ -33,7 +33,7 @@ describe("UserRoute (e2e)", () => {
 
   describe("create user route", () => {
     it("should create user", async () => {
-      await requestCreateUser(baseCreateUserData).expect(200);
+      await requestCreateUser(baseCreateUserData).expect(201);
 
       const createdUser = await database
         .getRepository(User)
@@ -75,7 +75,7 @@ describe("UserRoute (e2e)", () => {
 
   describe("loginUser", () => {
     it("should login user with username or email, and response it data", async () => {
-      await requestCreateUser(baseCreateUserData).expect(200);
+      await requestCreateUser(baseCreateUserData);
 
       await requestLoginUser({
         password: baseCreateUserData.password,
@@ -99,7 +99,7 @@ describe("UserRoute (e2e)", () => {
     });
 
     it("should not login user, when password or login not provided", async () => {
-      await requestCreateUser(baseCreateUserData).expect(200);
+      await requestCreateUser(baseCreateUserData);
 
       await requestLoginUser({
         password: "",
@@ -121,7 +121,7 @@ describe("UserRoute (e2e)", () => {
     });
 
     it("should not login user, when password is wrong", async () => {
-      await requestCreateUser(baseCreateUserData).expect(200);
+      await requestCreateUser(baseCreateUserData);
 
       await requestLoginUser({
         password: baseCreateUserData.password + "@",

@@ -53,23 +53,8 @@ describe("UserController", () => {
   });
 
   describe("createUser", () => {
-    it("should create user, return his data but without his password", async () => {
-      jest.spyOn(service, "createUser").mockResolvedValue({
-        ...baseCreateUserData,
-        active: true,
-        createdAt: new Date(),
-        userRole: "Free",
-      });
-
-      await requestCreateUser(baseCreateUserData)
-        .expect(200)
-        .then((created) => {
-          const data = created.body as User;
-
-          expect(data.active).toBe(true);
-          expect(data.userRole).toBe("Free" as UserRole);
-          expect(data.password).toBe("");
-        });
+    it("should create user", async () => {
+      await requestCreateUser(baseCreateUserData).expect(201);
     });
 
     it("should not create user without some property", async () => {
@@ -84,7 +69,7 @@ describe("UserController", () => {
         await requestCreateUser({ ...baseCreateUserData, [key]: "" })
           .expect(400)
           .then((response) => {
-            expect(response.body.msg).toBe(`missing value "${key}"`);
+            expect(response.body.msg).toBe(`missing ${key} value`);
           });
       }
     });

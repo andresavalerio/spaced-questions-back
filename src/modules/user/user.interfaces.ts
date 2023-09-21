@@ -1,5 +1,3 @@
-import { Repository } from "typeorm";
-
 export type UserRole = "Free" | "Premium";
 
 export interface CreateUserDTO {

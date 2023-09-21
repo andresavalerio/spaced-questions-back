@@ -29,11 +29,9 @@ export class UserController implements IController {
         return res.status(400).json({ msg: `missing ${key} value` });
 
     try {
-      const createdUser = await this.userService.createUser(createUserData);
+      await this.userService.createUser(createUserData);
 
-      if (createdUser.password) createdUser.password = "";
-
-      return res.status(200).json(createdUser);
+      return res.status(201).json();
     } catch (error) {
       if (error instanceof UserDuplicateError) {
         return res.status(409).json({ msg: "duplicated user" });
