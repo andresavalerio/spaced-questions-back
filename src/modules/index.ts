@@ -1,9 +1,14 @@
 import { ApplicationModifier } from "interfaces/module.interface";
 import { setUserModule } from "./user";
 import { setNotebookModule } from "./notebook";
+import { Router } from "express";
 
 export const setApplicationModules: ApplicationModifier = (application) => {
-  setUserModule(application);
+  const router = Router();
 
-  setNotebookModule(application);
+  setUserModule(router);
+
+  setNotebookModule(router);
+
+  application.use("/api", router);
 };
