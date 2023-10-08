@@ -101,6 +101,9 @@ describe("Notebook Service", () => {
         name: "Context to Tests",
         owner: "Pedro",
       } as Notebook);
+
+      expect(mockGetNotebooksByOwner).toBeCalled()
+
     });
   });
 });
