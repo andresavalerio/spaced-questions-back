@@ -8,7 +8,17 @@ import { NotebookRepository } from "../repositories/notebook.repository";
 
 jest.mock("../repositories/notebook.repository");
 
-const mockNotebookRepository: Notebook[] = [];
+let mockNotebookRepository: Notebook[] = [];
+
+const setMockNotebookRepository = () => {
+    mockNotebookRepository = [
+    {
+      id: "2",
+      name: "Context to Tests",
+      owner: "Pedro",
+    } as Notebook,
+  ];
+};
 
 const mockNotebookCreation = jest
   .spyOn(NotebookRepository.prototype, "createNotebook")
@@ -25,15 +35,34 @@ const mockNotebookCreation = jest
       }, 200);
     });
   });
+
+const mockGetNotebooksByOwner = jest
+  .spyOn(NotebookRepository.prototype, "getNotebooksByOwner")
+  .mockImplementation(async (notebookOwner: string) => {
+    return new Promise((resolver) => {
+      setTimeout(() => {
+        const ownersNotebooks: Notebook[] = mockNotebookRepository.filter(
+          (notebook) => (notebook.owner = notebookOwner)
+        );
+        resolver(ownersNotebooks);
+      }, 100);
+    });
+  });
+
 let notebookRepository: NotebookRepository;
 let notebookService: INotebookService;
 
 describe("Notebook Service", () => {
   describe("Creation of Notebook Context", () => {
+
     beforeEach(() => {
       notebookRepository = new NotebookRepository();
       notebookService = new NotebookService(notebookRepository);
     });
+
+    afterEach(() => {
+        setMockNotebookRepository();
+    })
 
     it("Should create a empty instance of notebook service", () => {
       expect(notebookService).toBeDefined();
@@ -55,7 +84,24 @@ describe("Notebook Service", () => {
   });
 
   describe("Getting already existent notebook context", () => {
-    it.todo("Gets a already existent notebook", () => {});
+
+    beforeEach(() => {
+        notebookRepository = new NotebookRepository();
+        setMockNotebookRepository();
+        notebookService = new NotebookService(notebookRepository);
+      });
+
+    it("Gets an already existent notebook", async () => {
+      const ownersNotebooks = await notebookRepository.getNotebooksByOwner(
+        "Pedro"
+      );
+
+      expect(ownersNotebooks).toContainEqual({
+        id: "2",
+        name: "Context to Tests",
+        owner: "Pedro",
+      } as Notebook);
+    });
   });
 });
 
