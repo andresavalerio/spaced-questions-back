@@ -11,7 +11,7 @@ jest.mock("../repositories/notebook.repository");
 let mockNotebookRepository: Notebook[] = [];
 
 const setMockNotebookRepository = () => {
-    mockNotebookRepository = [
+  mockNotebookRepository = [
     {
       id: "2",
       name: "Context to Tests",
@@ -54,15 +54,14 @@ let notebookService: INotebookService;
 
 describe("Notebook Service", () => {
   describe("Creation of Notebook Context", () => {
-
     beforeEach(() => {
       notebookRepository = new NotebookRepository();
       notebookService = new NotebookService(notebookRepository);
     });
 
     afterEach(() => {
-        setMockNotebookRepository();
-    })
+      setMockNotebookRepository();
+    });
 
     it("Should create a empty instance of notebook service", () => {
       expect(notebookService).toBeDefined();
@@ -81,15 +80,42 @@ describe("Notebook Service", () => {
 
       expect(mockNotebookCreation).toHaveBeenCalled();
     });
+
+    it.skip("Should get an error when the name is blank", async () => {
+        const newNotebookWithNoName: CreateNotebookDTO = {
+            name: "",
+            owner: "Pedro",
+          };
+        
+        const createdNotebook = notebookRepository.createNotebook(
+            newNotebookWithNoName
+          );
+
+        expect(async() => await createdNotebook).toThrow(Error)
+
+    });
+    
+    it.skip("Should get an error when the notebook name is blank", async () => {
+        const newNotebookWithOutOwner: CreateNotebookDTO = {
+            name: "I am an orphan",
+            owner: "",
+          };
+        
+        const createdNotebook = notebookRepository.createNotebook(
+            newNotebookWithOutOwner
+          );
+
+        expect(async() => await createdNotebook).toThrow(Error)
+
+    });
   });
 
   describe("Getting already existent notebook context", () => {
-
     beforeEach(() => {
-        notebookRepository = new NotebookRepository();
-        setMockNotebookRepository();
-        notebookService = new NotebookService(notebookRepository);
-      });
+      notebookRepository = new NotebookRepository();
+      setMockNotebookRepository();
+      notebookService = new NotebookService(notebookRepository);
+    });
 
     it("Gets an already existent notebook", async () => {
       const ownersNotebooks = await notebookRepository.getNotebooksByOwner(
@@ -102,8 +128,7 @@ describe("Notebook Service", () => {
         owner: "Pedro",
       } as Notebook);
 
-      expect(mockGetNotebooksByOwner).toBeCalled()
-
+      expect(mockGetNotebooksByOwner).toBeCalled();
     });
   });
 });
