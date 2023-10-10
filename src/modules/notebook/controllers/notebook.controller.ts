@@ -1,20 +1,26 @@
 import { Response, Request, Router } from "express";
-import { CreateNotebookDTO } from "../notebook.interfaces";
+import { CreateNotebookDTO, INotebookService } from "../notebook.interfaces";
 import { NotebookService } from "../services/notebook.service";
+import { IController } from "../../../interfaces/controller.interface";
+import { NotebookDuplicateError } from "../notebook.errors";
 
-export class NotebookController {
-  constructor(private notebookService: NotebookService) {}
+export class NotebookController implements IController {
+  private notebookService: INotebookService;
+
+  constructor(notebookService: INotebookService) {
+    this.notebookService = notebookService;
+  }
 
   async createNotebook(req: Request, res: Response) {
     const { name, owner } = req.body as CreateNotebookDTO;
 
     // Validação dos campos
     if (!name) {
-      return res.status(400).send("Name is required");
+      return res.status(400).json({ msg: "missing name value" });
     }
 
     if (!owner) {
-      return res.status(400).send("Owner is required");
+      return res.status(400).json({ msg: "missing owner value" });
     }
 
     try {
@@ -24,6 +30,9 @@ export class NotebookController {
       });
       return res.status(201).json(newNotebook);
     } catch (error) {
+      if (error instanceof NotebookDuplicateError) {
+        return res.status(409).json({ msg: "duplicated notebook" });
+      }
       return res.status(500).send();
     }
   }
