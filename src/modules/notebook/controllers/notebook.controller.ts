@@ -1,9 +1,9 @@
 import { Response, Request, Router } from "express";
-import { CreateNotebookDTO } from "../notebook.interfaces";
+import { CreateNotebookDTO, INotebookService } from "../notebook.interfaces";
 import { NotebookService } from "../services/notebook.service";
 
 export class NotebookController {
-  constructor(private notebookService: NotebookService) {}
+  constructor(private notebookService: INotebookService) {}
 
   async createNotebook(req: Request, res: Response) {
     const { name, owner } = req.body as CreateNotebookDTO;
