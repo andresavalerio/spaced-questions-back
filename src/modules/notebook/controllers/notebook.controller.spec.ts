@@ -191,7 +191,13 @@ describe("Notebook controler testing", () => {
           expect(notebook).toHaveProperty("owner");
         });
       }
+    });
 
+    it("Request notebook with owner without notebook", async () => {
+      await requestNotebookByOwner("Antonio").then((response) => {
+        expect(response.status).toBe(200)
+        expect(response.body).toHaveLength(0)
+      });
     });
   });
 });
