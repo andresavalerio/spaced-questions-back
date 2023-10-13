@@ -1,6 +1,10 @@
 import request from "supertest";
 import express, { type Express } from "express";
-import { CreateNotebookDTO, INotebookService } from "../notebook.interfaces";
+import {
+  CreateNotebookDTO,
+  INotebookService,
+  Notebook,
+} from "../notebook.interfaces";
 import { NotebookController } from "./notebook.controller";
 
 const baseCreatNotebookData: CreateNotebookDTO = {
@@ -9,12 +13,11 @@ const baseCreatNotebookData: CreateNotebookDTO = {
 };
 
 describe("Notebook controler testing", () => {
-  
   let response;
 
   let application: Express;
   let notebookService: INotebookService;
-  
+
   beforeAll(() => {
     notebookService = {
       createNotebook: jest.fn(),
@@ -39,7 +42,6 @@ describe("Notebook controler testing", () => {
   });
 
   describe("Notebook creation controller behavior", () => {
-
     const requestCreateNotebook = (data: CreateNotebookDTO) =>
       request(application).post("/").send(data);
 
@@ -91,7 +93,7 @@ describe("Notebook controler testing", () => {
       await requestCreateNotebook(blankNameReques as CreateNotebookDTO).then(
         (response) => {
           expect(response.status).toBe(400);
-          expect(response).toHaveProperty("text","Name is required");
+          expect(response).toHaveProperty("text", "Name is required");
         }
       );
 
@@ -104,9 +106,9 @@ describe("Notebook controler testing", () => {
         owner: "",
       };
 
-      await requestCreateNotebook(blankNameReques).then( response => {
-        expect(response.status).toBe(400)
-        expect(response).toHaveProperty('text','Owner is required')
+      await requestCreateNotebook(blankNameReques).then((response) => {
+        expect(response.status).toBe(400);
+        expect(response).toHaveProperty("text", "Owner is required");
       });
 
       expect(notebookService.createNotebook).not.toHaveBeenCalled();
@@ -118,18 +120,78 @@ describe("Notebook controler testing", () => {
         owner: null,
       } as unknown;
 
-      await requestCreateNotebook(blankNameReques as CreateNotebookDTO).then( response => {
-        expect(response.status).toBe(400);
-        expect(response).toHaveProperty('text', 'Owner is required')
-      });
+      await requestCreateNotebook(blankNameReques as CreateNotebookDTO).then(
+        (response) => {
+          expect(response.status).toBe(400);
+          expect(response).toHaveProperty("text", "Owner is required");
+        }
+      );
 
       expect(notebookService.createNotebook).not.toHaveBeenCalled();
     });
   });
 
-  describe("Notebook Get Owner Behavior", () => {
-    it("Should return notebook owner with id ...", () => {
-      
+  describe("Get Notebooks from Owner", () => {
+    const notebooks = [
+      {
+        id: "1",
+        name: "Mathematics",
+        owner: "Andre",
+      },
+      {
+        id: "2",
+        name: "History",
+        owner: "Andre",
+      },
+      {
+        id: "3",
+        name: "Onthology",
+        owner: "Lucca",
+      },
+      {
+        id: "4",
+        name: "Geography",
+        owner: "Lucca ",
+      },
+      {
+        id: "5",
+        name: "Mathematics",
+        owner: "Andre",
+      },
+    ] as Notebook[];
+
+    const requestNotebookByOwner = (owner: string) =>
+      request(application).get(`/${owner}`);
+
+    it("Should return the notebooks from the owner", async () => {
+      jest
+        .spyOn(notebookService, "getNotebooksByOwner")
+        .mockImplementation((owner: string) => {
+          return new Promise((resolver) => {
+            setTimeout(() => {
+              const ownerNotebooks = notebooks.filter(
+                (notebook) => notebook.owner === owner.trim()
+              ) as Notebook[];
+              resolver(ownerNotebooks);
+            }, 200);
+          });
+        });
+
+      response = await requestNotebookByOwner("Andre").then((response) => {
+        const notebooks = response.body as Notebook[];
+        expect(response.status).toBe(200);
+        expect(notebooks).toHaveLength(3);
+        expectToBeANotebook();
+      });
+
+      function expectToBeANotebook() {
+        notebooks.forEach((notebook) => {
+          expect(notebook).toHaveProperty("id");
+          expect(notebook).toHaveProperty("name");
+          expect(notebook).toHaveProperty("owner");
+        });
+      }
+
     });
   });
 });
