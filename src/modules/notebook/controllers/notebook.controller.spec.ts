@@ -9,37 +9,39 @@ const baseCreatNotebookData: CreateNotebookDTO = {
 };
 
 describe("Notebook controler testing", () => {
+  
+  let response;
+
+  let application: Express;
+  let notebookService: INotebookService;
+  
+  beforeAll(() => {
+    notebookService = {
+      createNotebook: jest.fn(),
+      getNotebooksByOwner: jest.fn(),
+    };
+  });
+
+  beforeEach(() => {
+    response = {};
+
+    application = express();
+
+    application.use(express.json());
+
+    const notebookController = new NotebookController(notebookService);
+
+    const router = notebookController.getRouter();
+
+    application.use("/", router);
+
+    jest.resetAllMocks();
+  });
+
   describe("Notebook creation controller behavior", () => {
-    let application: Express;
-    let notebookService: INotebookService;
 
     const requestCreateNotebook = (data: CreateNotebookDTO) =>
       request(application).post("/").send(data);
-
-    let response;
-
-    beforeAll(() => {
-      notebookService = {
-        createNotebook: jest.fn(),
-        getNotebooksByOwner: jest.fn(),
-      };
-    });
-
-    beforeEach(() => {
-      response = {};
-
-      application = express();
-
-      application.use(express.json());
-
-      const notebookController = new NotebookController(notebookService);
-
-      const router = notebookController.getRouter();
-
-      application.use("/", router);
-
-      jest.resetAllMocks();
-    });
 
     it("Should have an instance of the notebooks controller", () => {
       expect(application).toBeDefined();
@@ -126,6 +128,8 @@ describe("Notebook controler testing", () => {
   });
 
   describe("Notebook Get Owner Behavior", () => {
-    it.todo("Should return notebook owner with id ...");
+    it("Should return notebook owner with id ...", () => {
+      
+    });
   });
 });
