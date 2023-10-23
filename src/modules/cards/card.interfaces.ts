@@ -7,7 +7,7 @@ export interface CreateCardDTO {
 }
 
 export interface ICardService {
-  createCard(card: CreateCardDTO): void;
+  createCard(card: CreateCardDTO): Promise<Card>;
   getCardsByNotebook(notebookId: string): Promise<Card[]>;
 }
 

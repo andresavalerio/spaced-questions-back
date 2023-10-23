@@ -1,16 +1,16 @@
 import { Response, Request, Router } from "express";
-import { CreateCardDTO } from "../card.interfaces";
+import { CreateCardDTO, ICardService } from "../card.interfaces";
 import { CardService } from "../services/card.service";
 
 export class CardController {
-  constructor(private cardService: CardService) {}
+  constructor(private cardService: ICardService) {}
 
   async createCard(req: Request, res: Response) {
     const { title, content, notebookId } = req.body as CreateCardDTO;
 
     // Validação dos campos
     if (!title || !content || !notebookId) {
-      return res.status(400).send("Missing required fields");
+      return res.status(400).json({ msg: "Missing required fields" });
     }
 
     try {

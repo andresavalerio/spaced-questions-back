@@ -8,8 +8,10 @@ import {
   export class CardService implements ICardService {
     constructor(private cardRepository: ICardRepository) {}
   
-    async createCard(card: CreateCardDTO): Promise<void> {
-      await this.cardRepository.createCard(card);
+    async createCard(card: CreateCardDTO): Promise<Card> {
+      const createdCard = await this.cardRepository.createCard(card);
+
+      return createdCard;
     }
   
     async getCardsByNotebook(notebookId: string): Promise<Card[]> {
