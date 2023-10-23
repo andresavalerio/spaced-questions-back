@@ -15,12 +15,12 @@ export class NotebookController implements IController {
     const { name, owner } = req.body as CreateNotebookDTO;
 
     // Validação dos campos
-    if (!name) {
-      return res.status(400).json({ msg: "missing name value" });
+    if (!name || name === "" ) {
+      return res.status(400).json({ msg: "Missing name value" });
     }
 
-    if (!owner) {
-      return res.status(400).json({ msg: "missing owner value" });
+    if (!owner || owner === "") {
+      return res.status(400).json({ msg: "Missing owner value" });
     }
 
     try {

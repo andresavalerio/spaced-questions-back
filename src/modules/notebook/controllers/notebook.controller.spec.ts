@@ -53,7 +53,12 @@ describe("Notebook controler testing", () => {
       jest
         .spyOn(notebookService, "createNotebook")
         .mockImplementation((data) => {
-          return data;
+          const notebook: Notebook = {
+            id: "unique-id", // set a unique id here
+            name: data.name,
+            owner: data.owner,
+          };
+          return Promise.resolve(notebook);
         });
 
       response = requestCreateNotebook(baseCreatNotebookData);
@@ -70,21 +75,22 @@ describe("Notebook controler testing", () => {
       );
     });
 
-    it("The controller should return error 400 with 'name is required' for blank notebook name", async () => {
+    it("The controller should return error 400 with 'Missing name value' for blank notebook name", async () => {
       const blankNameReques: CreateNotebookDTO = {
         name: "",
         owner: "TiiredOfWriting",
       };
 
       await requestCreateNotebook(blankNameReques).then((response) => {
+        const responseBody = JSON.parse(response.text);
         expect(response.status).toBe(400);
-        expect(response).toHaveProperty("text", "Name is required");
+        expect(responseBody).toHaveProperty("msg", "Missing name value");
       });
 
       expect(notebookService.createNotebook).not.toHaveBeenCalled();
     });
 
-    it("The controller should return error 400 with 'name is required' for null notebook name", async () => {
+    it("The controller should return error 400 with 'Missing name value' for null notebook name", async () => {
       const blankNameReques = {
         name: null,
         owner: "TiiredOfWriting",
@@ -92,29 +98,31 @@ describe("Notebook controler testing", () => {
 
       await requestCreateNotebook(blankNameReques as CreateNotebookDTO).then(
         (response) => {
+          const responseBody = JSON.parse(response.text);
           expect(response.status).toBe(400);
-          expect(response).toHaveProperty("text", "Name is required");
+          expect(responseBody).toHaveProperty("msg", "Missing name value");
         }
       );
 
       expect(notebookService.createNotebook).not.toHaveBeenCalled();
     });
 
-    it("The controller should return error 400 with 'Owner is required' for blank notebook owner", async () => {
+    it("The controller should return error 400 with 'Missing owner value' for blank notebook owner", async () => {
       const blankNameReques: CreateNotebookDTO = {
         name: "Orphanage",
         owner: "",
       };
 
       await requestCreateNotebook(blankNameReques).then((response) => {
+        const responseBody = JSON.parse(response.text);
         expect(response.status).toBe(400);
-        expect(response).toHaveProperty("text", "Owner is required");
+        expect(responseBody).toHaveProperty("msg", "Missing owner value");
       });
 
       expect(notebookService.createNotebook).not.toHaveBeenCalled();
     });
 
-    it("The controller should return error 400 with 'Owner is required' for null notebook owner", async () => {
+    it("The controller should return error 400 with 'Missing owner value' for null notebook owner", async () => {
       const blankNameReques = {
         name: "Dont Know Owner",
         owner: null,
@@ -122,8 +130,9 @@ describe("Notebook controler testing", () => {
 
       await requestCreateNotebook(blankNameReques as CreateNotebookDTO).then(
         (response) => {
+          const responseBody = JSON.parse(response.text);
           expect(response.status).toBe(400);
-          expect(response).toHaveProperty("text", "Owner is required");
+          expect(responseBody).toHaveProperty("msg", "Missing owner value");
         }
       );
 
