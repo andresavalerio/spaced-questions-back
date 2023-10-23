@@ -8,8 +8,10 @@ import {
 export class NotebookService implements INotebookService {
   constructor(private notebookRepository: INotebookRepository) {}
 
-  async createNotebook(notebook: CreateNotebookDTO): Promise<void> {
-    await this.notebookRepository.createNotebook(notebook);
+  async createNotebook(notebook: CreateNotebookDTO): Promise<Notebook> {
+    const createdNotebook = await this.notebookRepository.createNotebook(notebook);
+
+    return createdNotebook;
   }
 
   async getNotebooksByOwner(owner: string): Promise<Notebook[]> {

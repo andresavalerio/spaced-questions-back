@@ -6,7 +6,7 @@ export interface CreateNotebookDTO {
 }
 
 export interface INotebookService {
-  createNotebook(notebook: CreateNotebookDTO): void;
+  createNotebook(notebook: CreateNotebookDTO): Promise<Notebook>;
   getNotebooksByOwner(owner: string): Promise<Notebook[]>;
 }
 
