@@ -10,6 +10,7 @@ import { NotebookController } from "./notebook.controller";
 const baseCreatNotebookData: CreateNotebookDTO = {
   name: "Testing methodology",
   owner: "Pedro",
+  content: "",
 };
 
 describe("Notebook controler testing", () => {
@@ -22,6 +23,7 @@ describe("Notebook controler testing", () => {
     notebookService = {
       createNotebook: jest.fn(),
       getNotebooksByOwner: jest.fn(),
+      getNotebookContent: jest.fn(),
     };
   });
 
@@ -57,6 +59,7 @@ describe("Notebook controler testing", () => {
             id: "unique-id", // set a unique id here
             name: data.name,
             owner: data.owner,
+            content: "",
           };
           return Promise.resolve(notebook);
         });
@@ -79,6 +82,7 @@ describe("Notebook controler testing", () => {
       const blankNameReques: CreateNotebookDTO = {
         name: "",
         owner: "TiiredOfWriting",
+        content: "",
       };
 
       await requestCreateNotebook(blankNameReques).then((response) => {
@@ -111,6 +115,7 @@ describe("Notebook controler testing", () => {
       const blankNameReques: CreateNotebookDTO = {
         name: "Orphanage",
         owner: "",
+        content: "",
       };
 
       await requestCreateNotebook(blankNameReques).then((response) => {

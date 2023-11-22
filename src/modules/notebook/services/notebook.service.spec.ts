@@ -71,6 +71,7 @@ describe("Notebook Service", () => {
       const newNotebook: CreateNotebookDTO = {
         name: "Testing Subjects",
         owner: "Pedro",
+        content: "This is a test",
       };
       const createdNotebook = await notebookRepository.createNotebook(
         newNotebook
@@ -85,6 +86,7 @@ describe("Notebook Service", () => {
         const newNotebookWithNoName: CreateNotebookDTO = {
             name: "",
             owner: "Pedro",
+            content: "This is a test",
           };
         
         const createdNotebook = notebookRepository.createNotebook(
@@ -99,6 +101,7 @@ describe("Notebook Service", () => {
         const newNotebookWithOutOwner: CreateNotebookDTO = {
             name: "I am an orphan",
             owner: "",
+            content: "This is a test",
           };
         
         const createdNotebook = notebookRepository.createNotebook(

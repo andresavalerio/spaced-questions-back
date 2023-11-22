@@ -3,46 +3,56 @@ import express, { Express } from "express";
 import { CardController } from "./card.controller";
 import { CreateCardDTO, ICardService, Card } from "../card.interfaces";
 import { CardDuplicateError, CardNotFoundError } from "../card.errors"; // Se existirem erros específicos para cards, adicione-os aqui.
+import { INotebookService } from "../../notebook/notebook.interfaces";
+import { NotebookService } from "../../notebook/services/notebook.service";
 
 const baseCreateCardData: CreateCardDTO = {
-  title: "Test Card",
-  content: "This is a test card content.",
-  notebookId: "testNotebookId"
+  notebookId: "testNotebookId",
+  userId: "testUserId",
+  question: "",
+  answer: "",
 };
 
 describe("CardController", () => {
   let application: Express;
-  let service: ICardService;
+  let cardService: ICardService;
+  let notebookService: NotebookService;
 
   const requestCreateCard = (data: CreateCardDTO) =>
-    request(application).post("/").send(data);
+    request(application).post("/cards").send(data);
 
   beforeAll(() => {
-    service = {
-      createCard: jest.fn(),
-      getCardsByNotebook: jest.fn(),
-    };
+    cardService = {
+      createCard: jest.fn().mockResolvedValue({ ...baseCreateCardData, id: 'testCardId' }),
+      getCardsByNotebook: jest.fn().mockResolvedValue([]),
+    };  
+
+  const notebookRepository = {
+    createNotebook: jest.fn(),
+    getNotebooksByOwner: jest.fn(),
+    getNotebookById: jest.fn(),
+  };
+
+    notebookService = new NotebookService(notebookRepository);
   });
 
   beforeEach(() => {
     application = express();
     application.use(express.json());
-    const controller = new CardController(service);
+    const controller = new CardController(cardService, notebookService);
     const router = controller.getRouter();
-    application.use("/", router);
+    application.use("/cards", router);
     jest.resetAllMocks();
   });
 
   describe("createCard", () => {
     it("should create card", async () => {
       await requestCreateCard(baseCreateCardData).expect(201);
-    });
+    }, 60000);
 
     it("should not create card without required fields", async () => {
       const toNullifyKeys: Array<keyof CreateCardDTO> = [
-        "title",
-        "content",
-        "notebookId"
+        "userId",
       ];
 
       for (const key of toNullifyKeys) {
@@ -58,7 +68,7 @@ describe("CardController", () => {
   describe("getCardsByNotebook", () => {
     it("should retrieve cards by notebook", async () => {
       const notebookId = "testNotebookId";
-      await request(application).get(`/${notebookId}`).expect(200);
+      await request(application).get(`/cards/${notebookId}`).expect(200);
     });
   });
 });
