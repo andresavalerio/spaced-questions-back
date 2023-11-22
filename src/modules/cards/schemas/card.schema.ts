@@ -6,8 +6,9 @@ export const CardSchema = new EntitySchema<Card>({
   target: Card,
   columns: {
     id: { type: "varchar", length: 50, primary: true, nullable: false },
-    title: { type: "varchar", length: 100, nullable: false },
-    content: { type: "text", nullable: false },
     notebookId: { type: "varchar", length: 50, nullable: false },
+    userId: { type: "varchar", length: 50, nullable: false },
+    question: { type: "text", nullable: false },
+    answer: { type: "text", nullable: false },
   },
 });
