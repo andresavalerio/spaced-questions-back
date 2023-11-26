@@ -11,6 +11,7 @@ import {
   UserLoginDTO,
   LoginUserResponseDTO,
   User,
+  GetUserResponseDTO,
 } from "../../user.interfaces";
 
 export class UserService implements IUserService {
@@ -69,5 +70,26 @@ export class UserService implements IUserService {
       token: token,
       user: userFound,
     };
+  }
+
+  public async getUser(token: string): Promise<GetUserResponseDTO> {
+    try {
+      const userData = this.authService.verifyToken(token);
+
+      const user = await this.userRepository.getByUsername(userData.username);
+
+      if (!user) throw new UserNotFoundError();
+
+      return {
+        active: user.active,
+        createdAt: user.createdAt,
+        email: user.email,
+        fullName: user.fullName,
+        username: user.username,
+        userRole: user.userRole,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 }
