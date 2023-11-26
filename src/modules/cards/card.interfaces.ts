@@ -1,9 +1,10 @@
 import { Repository } from "typeorm";
 
 export interface CreateCardDTO {
-  title: string;
-  content: string;
   notebookId: string;
+  userId: string;
+  question: string;
+  answer: string;
 }
 
 export interface ICardService {
@@ -18,7 +19,8 @@ export interface ICardRepository {
 
 export abstract class Card {
   id!: string;
-  title!: string;
-  content!: string;
   notebookId!: string;
+  userId!: string;
+  question!: string;
+  answer!: string;
 }

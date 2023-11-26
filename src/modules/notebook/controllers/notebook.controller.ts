@@ -27,6 +27,7 @@ export class NotebookController implements IController {
       const newNotebook = await this.notebookService.createNotebook({
         name,
         owner,
+        content: ""
       });
       return res.status(201).json(newNotebook);
     } catch (error) {
@@ -48,6 +49,21 @@ export class NotebookController implements IController {
     }
   }
 
+  async getNotebookContent(req: Request, res: Response) {
+    const { notebookId } = req.params;
+    const { userId } = req.params;  // Pegando o "owner" dos parâmetros da URL
+
+    try {
+      const content = await this.notebookService.getNotebookContent(notebookId);
+      if (!content) {
+        return res.status(404).json({ msg: "Notebook not found or access denied" });
+      }
+      return res.status(200).json({ content });
+    } catch (error) {
+      return res.status(500).json({ msg: "Internal server error" });
+    }
+  }
+
   getRouter(): Router {
     const router = Router();
 
@@ -57,6 +73,10 @@ export class NotebookController implements IController {
 
     router.get("/:owner", async (req, res) => {
       await this.getNotebooksByOwner(req, res);
+    });
+
+    router.get("/:notebookId/content", async (req, res) => {
+      await this.getNotebookContent(req, res);
     });
 
     return router;

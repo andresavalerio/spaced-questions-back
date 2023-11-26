@@ -8,5 +8,6 @@ export const NotebookSchema = new EntitySchema<Notebook>({
     id: { type: "varchar", length: 50, primary: true, nullable: false },
     name: { type: "varchar", length: 100, nullable: false },
     owner: { type: "varchar", length: 100, nullable: false },
+    content: { type: "text", nullable: true },
   },
 });

@@ -22,4 +22,10 @@ export class NotebookRepository implements INotebookRepository {
   async getNotebooksByOwner(owner: string): Promise<Notebook[]> {
     return await this.notebookRepository.find({ where: { owner } });
   }
+
+  async getNotebookById(id: string): Promise<Notebook> {
+    const notebook = await this.notebookRepository.findOne({ where: { id } });
+
+    return notebook || {} as Notebook;
+  }
 }
