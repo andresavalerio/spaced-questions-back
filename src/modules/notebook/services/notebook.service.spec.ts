@@ -1,5 +1,6 @@
 import {
   CreateNotebookDTO,
+  INotebookRepository,
   INotebookService,
   Notebook,
 } from "../notebook.interfaces";
@@ -54,6 +55,26 @@ let notebookService: INotebookService;
 
 describe("Notebook Service", () => {
   describe("Creation of Notebook Context", () => {
+    class NotebookService implements INotebookService {
+      constructor(private notebookRepository: NotebookRepository) {}
+
+      createNotebook(notebook: CreateNotebookDTO): Promise<Notebook> {
+        return this.notebookRepository.createNotebook(notebook);
+      }
+
+      getNotebooksByOwner(owner: string): Promise<Notebook[]> {
+        return this.notebookRepository.getNotebooksByOwner(owner);
+      }
+
+      getNotebookContent(notebookId: string): Promise<string> {
+        return this.notebookRepository.getNotebookContent(notebookId);
+      }
+
+      getNotebookById(id: string): Promise<Notebook> {
+        return this.notebookRepository.getNotebookById(id);
+      }
+    }
+
     beforeEach(() => {
       notebookRepository = new NotebookRepository();
       notebookService = new NotebookService(notebookRepository);
@@ -114,6 +135,26 @@ describe("Notebook Service", () => {
   });
 
   describe("Getting already existent notebook context", () => {
+    class NotebookService implements INotebookService {
+      constructor(private notebookRepository: INotebookRepository) {}
+
+      createNotebook(notebook: CreateNotebookDTO): Promise<Notebook> {
+        return this.notebookRepository.createNotebook(notebook);
+      }
+
+      getNotebooksByOwner(owner: string): Promise<Notebook[]> {
+        return this.notebookRepository.getNotebooksByOwner(owner);
+      }
+
+      getNotebookContent(notebookId: string): Promise<string> {
+        return this.notebookRepository.getNotebookContent(notebookId);
+      }
+
+      getNotebookById(id: string): Promise<Notebook> {
+        return this.notebookRepository.getNotebookById(id);
+      }
+    }
+
     beforeEach(() => {
       notebookRepository = new NotebookRepository();
       setMockNotebookRepository();

@@ -28,4 +28,10 @@ export class NotebookRepository implements INotebookRepository {
 
     return notebook || {} as Notebook;
   }
+
+  async getNotebookContent(notebookId: string): Promise<string> {
+    const notebook = await this.notebookRepository.findOne({ where: { id: notebookId } });
+
+    return notebook?.content || "";
+  }
 }

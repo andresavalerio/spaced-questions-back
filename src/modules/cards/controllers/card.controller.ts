@@ -1,14 +1,13 @@
 import { Response, Request, Router } from "express";
 import { CreateCardDTO, ICardService } from "../card.interfaces";
-import { CardService } from "../services/card.service";
-import { NotebookService } from "../../notebook/services/notebook.service"; 
-import { UserService } from "../../user/services/user/user.service"; 
-import axios from 'axios';
+import { LLMService } from "../services/llm/llm.service";
+import { INotebookService } from "modules/notebook/notebook.interfaces";
 
 export class CardController {
   constructor(
     private cardService: ICardService,
-    private notebookService: NotebookService, 
+    private notebookService: INotebookService, 
+    private llmService: LLMService
   ) {}
 
   async createCard(req: Request, res: Response) {
@@ -27,7 +26,7 @@ export class CardController {
       }
 
       // Chame a API do Maritaca para gerar pergunta e resposta
-      const { question, answer } = await this.generateQuestionAndAnswer(notebookContent);
+      const { question, answer } = await this.llmService.generateQuestionAndAnswer(notebookContent);
 
       // Crie o card com a pergunta e a resposta
       const newCard = await this.cardService.createCard({
@@ -40,33 +39,6 @@ export class CardController {
       return res.status(201).json(newCard);
     } catch (error) {
       return res.status(500).send();
-    }
-  }
-
-  async generateQuestionAndAnswer(content: string): Promise<{ question: string; answer: string }> {
-    const url = 'https://chat.maritaca.ai/api/chat/inference';
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Key 6532ccfe9aed8cf1b231484c$f5cec2382d3eb5ad9acfe7774be64ab07b743e9041d7e0e511f0f7a98c54142c'
-    };
-    const body = {
-      messages: [
-        {
-          role: "user",
-          content: `Com base na anotação abaixo me de uma pergunta e uma resposta, seguindo o modelo SRS sobre o conteudo estudado. Formate seu retorno em formato json com a pergunta estando na tag data.question e a resposta na tag data.answer: '${content}'`
-        }
-      ],
-      do_sample: "true"
-    };
-  
-    try {
-      const response = await axios.post(url, body, { headers });
-      const responseData = JSON.parse(response.data.answer).data;
-  
-      return { question: responseData.question, answer: responseData.answer };
-    } catch (error) {
-      console.error('Erro ao chamar a API do Maritaca:', error);
-      throw new Error('Erro ao gerar pergunta e resposta');
     }
   }
 

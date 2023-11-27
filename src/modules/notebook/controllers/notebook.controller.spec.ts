@@ -24,6 +24,7 @@ describe("Notebook controler testing", () => {
       createNotebook: jest.fn(),
       getNotebooksByOwner: jest.fn(),
       getNotebookContent: jest.fn(),
+      getNotebookById: jest.fn(),
     };
   });
 

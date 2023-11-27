@@ -3,7 +3,7 @@ import {
     ICardRepository,
     ICardService,
     Card,
-  } from "../card.interfaces";
+  } from "../../card.interfaces";
   
   export class CardService implements ICardService {
     constructor(private cardRepository: ICardRepository) {}
