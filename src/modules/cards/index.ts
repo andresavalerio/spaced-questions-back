@@ -1,6 +1,6 @@
 import { RouterModifier } from "interfaces/module.interface";
 import { CardController } from "./controllers/card.controller";
-import { CardService } from "./services/card.service";
+import { CardService } from "./services/cards/card.service";
 import { CardRepository } from "./repositories/card.repository";
 import { NotebookService } from "../notebook/services/notebook.service";
 import { NotebookRepository } from "../notebook/repositories/notebook.repository";

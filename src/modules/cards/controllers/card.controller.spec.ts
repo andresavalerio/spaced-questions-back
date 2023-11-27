@@ -1,10 +1,9 @@
 import request from "supertest";
 import express, { Express } from "express";
 import { CardController } from "./card.controller";
-import { CreateCardDTO, ICardService, Card } from "../card.interfaces";
+import { CreateCardDTO, ICardService, Card, ILLMService } from "../card.interfaces";
 import { CardDuplicateError, CardNotFoundError } from "../card.errors"; // Se existirem erros específicos para cards, adicione-os aqui.
 import { INotebookService } from "../../notebook/notebook.interfaces";
-import { NotebookService } from "../../notebook/services/notebook.service";
 
 const baseCreateCardData: CreateCardDTO = {
   notebookId: "testNotebookId",
@@ -16,7 +15,8 @@ const baseCreateCardData: CreateCardDTO = {
 describe("CardController", () => {
   let application: Express;
   let cardService: ICardService;
-  let notebookService: NotebookService;
+  let notebookService: INotebookService;
+  let llmService: ILLMService;
 
   const requestCreateCard = (data: CreateCardDTO) =>
     request(application).post("/cards").send(data);
@@ -27,19 +27,22 @@ describe("CardController", () => {
       getCardsByNotebook: jest.fn().mockResolvedValue([]),
     };  
 
-  const notebookRepository = {
-    createNotebook: jest.fn(),
-    getNotebooksByOwner: jest.fn(),
-    getNotebookById: jest.fn(),
-  };
+    notebookService = {
+      getNotebookContent: jest.fn().mockResolvedValue(""),
+      getNotebookById: jest.fn().mockResolvedValue({ id: 'testNotebookId', ownerId: 'testUserId' }),
+      createNotebook: jest.fn().mockResolvedValue({ id: 'testNotebookId', ownerId: 'testUserId' }),
+      getNotebooksByOwner: jest.fn().mockResolvedValue([]),
+    };
 
-    notebookService = new NotebookService(notebookRepository);
+    llmService = {
+      generateQuestionAndAnswer: jest.fn().mockResolvedValue({ question: 'testQuestion', answer: 'testAnswer' }),
+    };
   });
 
   beforeEach(() => {
     application = express();
     application.use(express.json());
-    const controller = new CardController(cardService, notebookService);
+    const controller = new CardController(cardService, notebookService, llmService);
     const router = controller.getRouter();
     application.use("/cards", router);
     jest.resetAllMocks();

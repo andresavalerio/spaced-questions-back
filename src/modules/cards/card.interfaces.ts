@@ -17,6 +17,10 @@ export interface ICardRepository {
   getCardsByNotebook(notebookId: string): Promise<Card[]>;
 }
 
+export interface ILLMService {
+  generateQuestionAndAnswer(content: string): Promise<{ question: string; answer: string }>;
+}
+
 export abstract class Card {
   id!: string;
   notebookId!: string;
