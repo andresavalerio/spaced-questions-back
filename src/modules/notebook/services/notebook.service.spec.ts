@@ -73,6 +73,10 @@ describe("Notebook Service", () => {
       getNotebookById(id: string): Promise<Notebook> {
         return this.notebookRepository.getNotebookById(id);
       }
+      async getNotebookContentById(notebookId: string): Promise<string> {
+        return (await this.notebookRepository.getNotebookById(notebookId))
+          .content;
+      }
     }
 
     beforeEach(() => {
@@ -104,33 +108,31 @@ describe("Notebook Service", () => {
     });
 
     it.skip("Should get an error when the name is blank", async () => {
-        const newNotebookWithNoName: CreateNotebookDTO = {
-            name: "",
-            owner: "Pedro",
-            content: "This is a test",
-          };
-        
-        const createdNotebook = notebookRepository.createNotebook(
-            newNotebookWithNoName
-          );
+      const newNotebookWithNoName: CreateNotebookDTO = {
+        name: "",
+        owner: "Pedro",
+        content: "This is a test",
+      };
 
-        expect(async() => await createdNotebook).toThrow(Error)
+      const createdNotebook = notebookRepository.createNotebook(
+        newNotebookWithNoName
+      );
 
+      expect(async () => await createdNotebook).toThrow(Error);
     });
-    
+
     it.skip("Should get an error when the notebook name is blank", async () => {
-        const newNotebookWithOutOwner: CreateNotebookDTO = {
-            name: "I am an orphan",
-            owner: "",
-            content: "This is a test",
-          };
-        
-        const createdNotebook = notebookRepository.createNotebook(
-            newNotebookWithOutOwner
-          );
+      const newNotebookWithOutOwner: CreateNotebookDTO = {
+        name: "I am an orphan",
+        owner: "",
+        content: "This is a test",
+      };
 
-        expect(async() => await createdNotebook).toThrow(Error)
+      const createdNotebook = notebookRepository.createNotebook(
+        newNotebookWithOutOwner
+      );
 
+      expect(async () => await createdNotebook).toThrow(Error);
     });
   });
 
@@ -146,7 +148,7 @@ describe("Notebook Service", () => {
         return this.notebookRepository.getNotebooksByOwner(owner);
       }
 
-      getNotebookContent(notebookId: string): Promise<string> {
+      getNotebookContentById(notebookId: string): Promise<string> {
         return this.notebookRepository.getNotebookContent(notebookId);
       }
 

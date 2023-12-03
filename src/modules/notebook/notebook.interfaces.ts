@@ -1,5 +1,3 @@
-import { Repository } from "typeorm";
-
 export interface CreateNotebookDTO {
   name: string;
   owner: string;
@@ -9,7 +7,7 @@ export interface CreateNotebookDTO {
 export interface INotebookService {
   createNotebook(notebook: CreateNotebookDTO): Promise<Notebook>;
   getNotebooksByOwner(owner: string): Promise<Notebook[]>;
-  getNotebookContent(notebookId: string): Promise<string>;
+  getNotebookContentById(notebookId: string): Promise<string>;
   getNotebookById(id: string): Promise<Notebook>;
 }
 

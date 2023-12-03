@@ -2,7 +2,10 @@ import { Response, Request, Router } from "express";
 import { CreateNotebookDTO, INotebookService } from "../notebook.interfaces";
 import { NotebookService } from "../services/notebook.service";
 import { IController } from "../../../interfaces/controller.interface";
-import { NotebookDuplicateError } from "../notebook.errors";
+import {
+  NotebookDuplicateError,
+  NotebookNotFoundError,
+} from "../notebook.errors";
 
 export class NotebookController implements IController {
   private notebookService: INotebookService;
@@ -15,7 +18,7 @@ export class NotebookController implements IController {
     const { name, owner } = req.body as CreateNotebookDTO;
 
     // Validação dos campos
-    if (!name || name === "" ) {
+    if (!name || name === "") {
       return res.status(400).json({ msg: "Missing name value" });
     }
 
@@ -27,7 +30,7 @@ export class NotebookController implements IController {
       const newNotebook = await this.notebookService.createNotebook({
         name,
         owner,
-        content: ""
+        content: "",
       });
       return res.status(201).json(newNotebook);
     } catch (error) {
@@ -39,8 +42,8 @@ export class NotebookController implements IController {
   }
 
   async getNotebooksByOwner(req: Request, res: Response) {
-    const { owner } = req.params;  // Pegando o "owner" dos parâmetros da URL
-  
+    const { owner } = req.params; // Pegando o "owner" dos parâmetros da URL
+
     try {
       const notebooks = await this.notebookService.getNotebooksByOwner(owner);
       return res.status(200).json(notebooks);
@@ -51,15 +54,19 @@ export class NotebookController implements IController {
 
   async getNotebookContent(req: Request, res: Response) {
     const { notebookId } = req.params;
-    const { userId } = req.params;  // Pegando o "owner" dos parâmetros da URL
 
     try {
-      const content = await this.notebookService.getNotebookContent(notebookId);
-      if (!content) {
-        return res.status(404).json({ msg: "Notebook not found or access denied" });
-      }
+      const content = await this.notebookService.getNotebookContentById(
+        notebookId
+      );
+
       return res.status(200).json({ content });
     } catch (error) {
+      if (error instanceof NotebookNotFoundError)
+        return res
+          .status(404)
+          .json({ msg: "Notebook not found or access denied" });
+
       return res.status(500).json({ msg: "Internal server error" });
     }
   }
