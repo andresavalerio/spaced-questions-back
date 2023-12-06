@@ -53,6 +53,17 @@ export class CardController {
     }
   }
 
+  async evaluateGivenAnswer(req: Request, res: Response) {
+    const { question, answer, content } = req.body;
+
+    try {
+      const { score, interpretation } = await this.llmService.evaluateAnswer(question, answer, content);
+      return res.status(200).json({ score, interpretation });
+    } catch (error) {
+      return res.status(500).send();
+    }
+  }
+
   getRouter(): Router {
     const router = Router();
 

@@ -19,6 +19,7 @@ export interface ICardRepository {
 
 export interface ILLMService {
   generateQuestionAndAnswer(content: string): Promise<{ question: string; answer: string }>;
+  evaluateAnswer(question: string, answer: string, content: string): Promise<{ score: number; interpretation: string}>;
 }
 
 export abstract class Card {

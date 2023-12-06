@@ -36,6 +36,7 @@ describe("CardController", () => {
 
     llmService = {
       generateQuestionAndAnswer: jest.fn().mockResolvedValue({ question: 'testQuestion', answer: 'testAnswer' }),
+      evaluateAnswer: jest.fn().mockResolvedValue({ score: 0, interpretation: 'testInterpretation' }),
     };
   });
 
