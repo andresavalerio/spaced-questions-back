@@ -23,7 +23,7 @@ describe("Notebook controler testing", () => {
     notebookService = {
       createNotebook: jest.fn(),
       getNotebooksByOwner: jest.fn(),
-      getNotebookContent: jest.fn(),
+      getNotebookContentById: jest.fn(),
       getNotebookById: jest.fn(),
     };
   });
@@ -210,8 +210,8 @@ describe("Notebook controler testing", () => {
 
     it("Request notebook with owner without notebook", async () => {
       await requestNotebookByOwner("Antonio").then((response) => {
-        expect(response.status).toBe(200)
-        expect(response.body).toHaveLength(0)
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveLength(0);
       });
     });
   });

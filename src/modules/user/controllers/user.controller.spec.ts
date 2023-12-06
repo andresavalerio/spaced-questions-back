@@ -31,6 +31,7 @@ describe("UserController", () => {
     service = {
       createUser: jest.fn(),
       loginUser: jest.fn(),
+      getUser: jest.fn(),
     };
   });
 

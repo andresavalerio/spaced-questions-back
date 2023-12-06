@@ -3,6 +3,7 @@ import { IController } from "../../../interfaces/controller.interface";
 import {
   UserDuplicateError,
   UserNotFoundError,
+  UserTokenError,
   UserWrongPasswordError,
 } from "../user.errors";
 import { CreateUserDTO, IUserService, UserLoginDTO } from "../user.interfaces";
@@ -64,8 +65,41 @@ export class UserController implements IController {
     }
   }
 
+  async getUser(req: Request, res: Response) {
+    const authorization = req.headers["authorization"];
+
+    if (typeof authorization !== "string")
+      return res
+        .status(400)
+        .json({ msg: "Header sem o token de autorização." });
+
+    const matchResult = authorization.match(/^Bearer ([^ ]+)$/);
+
+    if (!matchResult)
+      return res
+        .status(400)
+        .json({ msg: "Autorização não está nos padrões necessária." });
+
+    const token = matchResult[1];
+
+    try {
+      const data = this.userService.getUser(token);
+
+      res.status(200).json(data);
+    } catch (error) {
+      if (error instanceof UserTokenError)
+        return res.status(401).json({ msg: "Token Inválido." });
+
+      res.status(500).json({ msg: "Internal Server Error." });
+    }
+  }
+
   getRouter(): Router {
     const router = Router();
+
+    router.get("/", async (req, res) => {
+      await this.getUser(req, res);
+    });
 
     router.post("/", async (req, res) => {
       await this.createUser(req, res);

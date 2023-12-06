@@ -17,9 +17,19 @@ export interface LoginUserResponseDTO {
   token: string;
 }
 
+export type GetUserResponseDTO = {
+  username: string;
+  email: string;
+  fullName: string;
+  active: boolean;
+  userRole: UserRole;
+  createdAt: Date;
+};
+
 export interface IUserService {
   createUser(user: CreateUserDTO): Promise<User>;
   loginUser(user: UserLoginDTO): Promise<LoginUserResponseDTO>;
+  getUser(token: string): Promise<UserTokenDTO>;
 }
 
 export interface IUserRepository {

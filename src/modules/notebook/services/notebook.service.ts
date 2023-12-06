@@ -1,3 +1,4 @@
+import { NotebookNotFoundError } from "../notebook.errors";
 import {
   CreateNotebookDTO,
   INotebookRepository,
@@ -9,7 +10,9 @@ export class NotebookService implements INotebookService {
   constructor(private notebookRepository: INotebookRepository) {}
 
   async createNotebook(notebook: CreateNotebookDTO): Promise<Notebook> {
-    const createdNotebook = await this.notebookRepository.createNotebook(notebook);
+    const createdNotebook = await this.notebookRepository.createNotebook(
+      notebook
+    );
 
     return createdNotebook;
   }
@@ -18,13 +21,19 @@ export class NotebookService implements INotebookService {
     return await this.notebookRepository.getNotebooksByOwner(owner);
   }
 
-  async getNotebookContent(notebookId: string): Promise<string> {
+  async getNotebookContentById(notebookId: string): Promise<string> {
     const notebook = await this.notebookRepository.getNotebookById(notebookId);
 
-    if (!notebook) {
-      return "Cannot find notebook";
-    }
+    if (!notebook) throw new NotebookNotFoundError();
 
     return notebook.content;
+  }
+
+  async getNotebookById(id: string): Promise<Notebook> {
+    const notebook = await this.notebookRepository.getNotebookById(id);
+
+    if (!notebook) throw new NotebookNotFoundError();
+
+    return notebook;
   }
 }

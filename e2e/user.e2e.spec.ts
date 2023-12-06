@@ -16,6 +16,11 @@ describe("UserRoute (e2e)", () => {
   const requestCreateUser = (data: CreateUserDTO) =>
     request(application).post("/api/user").send(data);
 
+  const requestGetUser = (token: string) =>
+    request(application)
+      .get("/api/user")
+      .set("Authorization", `Bearer ${token}`);
+
   const requestLoginUser = (data: UserLoginDTO) =>
     request(application).post("/api/user/login").send(data);
 
@@ -73,7 +78,7 @@ describe("UserRoute (e2e)", () => {
     });
   });
 
-  describe("loginUser", () => {
+  describe("login user route", () => {
     it("should login user with username or email, and response it data", async () => {
       await requestCreateUser(baseCreateUserData);
 
@@ -141,6 +146,25 @@ describe("UserRoute (e2e)", () => {
         .expect(409)
         .then((error) => {
           expect(error.body.msg).toBe("user not found");
+        });
+    });
+  });
+
+  describe("get user route", () => {
+    it("should get user", async () => {
+      await requestCreateUser(baseCreateUserData);
+
+      const response = await requestLoginUser({
+        password: baseCreateUserData.password,
+        login: baseCreateUserData.username,
+      });
+
+      const token = response.body.token as string;
+
+      await requestGetUser(token)
+        .expect(200)
+        .then((res) => {
+          expect(res.body).toBeDefined();
         });
     });
   });
